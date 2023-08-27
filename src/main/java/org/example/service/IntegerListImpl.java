@@ -2,7 +2,6 @@ package org.example.service;
 
 
 import org.example.exception.NullItemException;
-import org.example.exception.StorageIsFullException;
 import org.example.exception.invalidIndexException;
 
 import java.util.Arrays;
@@ -83,7 +82,8 @@ public class IntegerListImpl implements IntegerList {
     }
 
 
-    private void sort(Integer[] storageCopy) {
+    private void sort(Integer[] arr) {
+        quickSort(arr,0,arr.length-1);
     }
 
     @Override
@@ -146,7 +146,7 @@ public class IntegerListImpl implements IntegerList {
 
     private void validateSize() {
         if (size == storage.length) {
-            throw new StorageIsFullException();
+            grow();
         }
     }
 
@@ -178,5 +178,42 @@ public class IntegerListImpl implements IntegerList {
 
     }
 
+    public void grow() {
+        storage = Arrays.copyOf(storage, size + size / 2);
+
+    }
+
+    public void quickSort(Integer[] arr, int first, int last) {
+        if (first < last) {
+            int partitionIndex = partition(arr, first, last);
+
+            quickSort(arr, first, partitionIndex - 1);
+            quickSort(arr, partitionIndex + 1, last);
+        }
+    }
+
+    private static int partition(Integer[] arr, int begin, int end) {
+        int pivot = arr[end];
+        int i = (begin - 1);
+
+        for (int j = begin; j < end; j++) {
+            if (arr[j] <= pivot) {
+                i++;
+
+                swapElements(arr, i, j);
+            }
+        }
+
+        swapElements(arr, i + 1, end);
+        return i + 1;
+    }
+
+    private static void swapElements(Integer[] arr, int left, int right) {
+        int temp = arr[left];
+        arr[left] = arr[right];
+        arr[right] = temp;
+
+
+    }
 
 }
